@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: true
+  webgpu: true
+  "@vgpu/adapter-node": true

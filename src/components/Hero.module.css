@@ -1,0 +1,121 @@
+.hero {
+  display: flex;
+  align-items: center;
+  min-height: min(100svh, 52rem);
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: var(--space-9) var(--space-5) var(--space-8);
+}
+
+/*
+ * The shader's centerFade darkens a band through the middle of the frame, so
+ * text laid on the left stays readable over the accretion disk. The gradient
+ * is the belt-and-braces version for when the backdrop is a static CSS one.
+ */
+.content {
+  max-width: 40rem;
+  padding: var(--space-5);
+  margin-left: calc(var(--space-5) * -1);
+  background: linear-gradient(
+    100deg,
+    var(--scrim-strong) 0%,
+    var(--scrim) 45%,
+    transparent 100%
+  );
+  border-radius: var(--radius-lg);
+}
+
+.eyebrow {
+  color: var(--ember);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.name {
+  margin: var(--space-3) 0 var(--space-4);
+  font-size: var(--text-hero);
+  font-weight: 700;
+}
+
+.tagline {
+  max-width: 34ch;
+  font-size: var(--text-xl);
+  color: var(--text);
+}
+
+.intro {
+  max-width: var(--measure);
+  margin-top: var(--space-3);
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.primary,
+.secondary {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  font-weight: 550;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.primary {
+  background: var(--ember);
+  color: var(--bg);
+}
+
+.primary:hover {
+  background: var(--hot);
+  color: var(--bg);
+}
+
+.secondary {
+  border: 1px solid var(--border-bright);
+  color: var(--text);
+}
+
+.secondary:hover {
+  border-color: var(--ember-deep);
+  background: var(--ember-glow);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badges li {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+@media (width < 40rem) {
+  .hero {
+    min-height: auto;
+    padding-block: var(--space-8) var(--space-7);
+  }
+
+  .content {
+    margin-left: 0;
+    padding: var(--space-4) 0;
+  }
+}

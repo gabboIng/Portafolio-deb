@@ -1,0 +1,75 @@
+/*
+ * Design tokens.
+ *
+ * The accent ramp is not arbitrary: it is the accretion disk's own thermal
+ * ramp from disk.wgsl, linear -> sRGB. That keeps the UI and the shader
+ * looking like one thing instead of two layers.
+ *
+ *   vec3f(0.52, 0.14, 0.03) -> #BE6A32   outer disk, cool
+ *   vec3f(1.00, 0.56, 0.17) -> #FFC472   mid disk, amber   <- accent
+ *   vec3f(1.00, 0.94, 0.83) -> #FFF8EB   inner disk, white hot
+ *
+ * Contrast on --bg (all WCAG AA, muted clears 4.5:1):
+ *   --text 17.5:1   --ember 12.8:1   --text-muted 6.7:1
+ */
+
+:root {
+  /* Surfaces */
+  --bg: #08080c;
+  --bg-raised: #0e0e14;
+  --border: #1e1e28;
+  --border-bright: #2e2e3c;
+
+  /* Text */
+  --text: #f5efe6;
+  --text-muted: #9a93a0;
+  --text-faint: #6b6673;
+
+  /* Accent (disk thermal ramp) */
+  --ember: #ffc472;
+  --ember-deep: #be6a32;
+  --hot: #fff8eb;
+  --ember-glow: rgb(255 196 114 / 0.14);
+
+  /* Legibility scrims over the animated background */
+  --scrim: rgb(8 8 12 / 0.68);
+  --scrim-strong: rgb(8 8 12 / 0.86);
+  --scrim-blur: 14px;
+
+  /* Type */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+  --text-2xl: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  --text-hero: clamp(2.5rem, 1rem + 7vw, 5.25rem);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  /* Shape + motion */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur: 240ms;
+
+  /* Layout */
+  --measure: 68ch;
+  --container: 1100px;
+}
