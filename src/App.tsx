@@ -4,11 +4,15 @@ import { Hero } from "./components/Hero";
 import { Nav } from "./components/Nav";
 import { Projects } from "./components/Projects";
 import { Skills } from "./components/Skills";
+import { useIntroReveal } from "./lib/reveal";
+import styles from "./App.module.css";
 
 export function App() {
+  const { revealed, onSettled } = useIntroReveal();
+
   return (
-    <>
-      <BlackHoleBackground />
+    <div className={styles.shell} data-revealed={revealed}>
+      <BlackHoleBackground onSettled={onSettled} />
       <Nav />
       <main>
         <Hero />
@@ -16,6 +20,6 @@ export function App() {
         <Skills />
         <Contact />
       </main>
-    </>
+    </div>
   );
 }

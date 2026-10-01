@@ -27,12 +27,32 @@ const TARGET_FPS = 30;
 
 const MOBILE_QUERY = "(max-width: 767px)";
 
+/*
+ * Render scale for the backdrop.
+ *
+ * Sub-native on purpose: this is a full-bleed, always-on background, and the
+ * shadow, the photon ring, and the lensing arcs are all soft edges. At 1.0 the
+ * ring aliases away at some angles and the disk filaments dissolve; at 0.7 the
+ * shape holds and the fine structure softens, which is the better trade for
+ * something that is always behind the copy.
+ *
+ * The cost is real though. A weaker GPU already spends most of its frame budget
+ * compiling `shade`, and the fragment cost scales with the pixels. So this is
+ * the first thing to raise once the shader is cheaper, not a free win.
+ */
 const DRAFT_DPR = 0.7;
 
 interface RendererOptions {
   canvas: HTMLCanvasElement;
   /** Freeze animation and draw a single frame instead of looping. */
   reducedMotion?: boolean;
+  /**
+   * Called once, after a frame has actually been submitted. `ready` only means
+   * the pipelines compiled, so the canvas can still be blank when it resolves.
+   * Also fires on the reduced-motion path, which draws a single frame outside
+   * the loop.
+   */
+  onFirstFrame?: () => void;
 }
 
 type RenderSize = { width: number; height: number };
@@ -40,6 +60,7 @@ type RenderSize = { width: number; height: number };
 export function createRenderer({
   canvas,
   reducedMotion = false,
+  onFirstFrame,
 }: RendererOptions) {
   const settings = defaultHeroSettings();
   if (reducedMotion) {
@@ -96,6 +117,7 @@ export function createRenderer({
   let resizeFrame = 0;
   let pendingSize: RenderSize | undefined;
   let forceBake = true;
+  let firstFrameSent = false;
   let pointerXNormalized = 0;
   let currentSceneYaw = 0;
   let lastYawAt: number | undefined;
@@ -176,9 +198,13 @@ export function createRenderer({
       targets,
       settings,
       advanceAnimationTime(now),
-      advanceSceneYaw(now)
+      advanceSceneYaw(now),
     );
     renderChain(frame, effects, targets, surface, runBake);
+    if (!firstFrameSent) {
+      firstFrameSent = true;
+      onFirstFrame?.();
+    }
   };
 
   const advanceSceneYaw = (now: number): number => {
@@ -283,6 +309,7 @@ export function createRenderer({
     setBindings(effects, targets);
     setPostUniforms(effects, targets, settings);
     await prewarm(effects, targets, surface);
+
     if (disposed) return;
     observer =
       typeof ResizeObserver === "undefined"
@@ -330,3 +357,4 @@ export function createRenderer({
 function clockMs(): number {
   return typeof performance === "undefined" ? Date.now() : performance.now();
 }
+

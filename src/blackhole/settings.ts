@@ -49,14 +49,28 @@ export interface HeroSettings {
 export function defaultHeroSettings(): HeroSettings {
   return {
     cameraY: 0.16,
-    distance: 13.5,
+    // Far enough back that the whole disk fits. At 13.5 the upper lensing arc
+    // left the top of the frame and the far side of the disk ran off the right
+    // edge, which on a full-bleed backdrop reads as a mistake rather than as a
+    // crop. As a backdrop there is no smaller viewport to fall back to, so the
+    // scene has to sit inside the frame on its own.
+    distance: 16,
     diskRadius: 9,
     fov: 3,
-    // Camera aim in NDC. The original hero used 0.8/0.3 to sit the hole on the
-    // right and leave the left free for copy; as a full-page backdrop that
-    // pushed it half off-screen, so it sits right-of-centre but fully in frame.
-    centerX: 0.34,
-    centerY: 0.12,
+    // Camera aim in NDC, so 0 is the middle of the frame.
+    //
+    // These used to sit far right (0.8/0.3 in the original hero, 0.34 here) to
+    // keep the disk clear of the copy. As a full-bleed backdrop that is the
+    // wrong trade: the disk is much wider than the shadow, so any rightward aim
+    // runs the far arm off the right edge, and no amount of pulling the camera
+    // back fixes that without shrinking the hole to a speck.
+    //
+    // So the scene is centred and aimed slightly up, which leaves all four edges
+    // clear, and the copy overlaps the dimmer left side instead. The Hero's CSS
+    // scrim is what makes that overlap readable; the shader no longer has to
+    // solve it by hiding itself off-frame.
+    centerX: 0,
+    centerY: 0.1,
     cameraRoll: -0.27,
     mouseYaw: 0.15,
     // Darkens a horizontal band through the middle of the frame for text

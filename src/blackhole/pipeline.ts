@@ -322,10 +322,17 @@ export async function prewarm(
   output: Output
 ): Promise<void> {
   const bloomOutput = { colors: [targets.bloom0.format] };
+
+  /*
+   * All thirteen compiles are started together and awaited as one batch. They
+   * are independent, so serialising them would only add the sum of their times
+   * instead of the max.
+   */
   await Promise.all([
     effects.bake.compile(targets.gbuffer),
     effects.refine.compile(targets.aa),
     effects.shade.compile(targets.scene),
+    effects.composite.compile({ colors: [output.format] }),
     effects.bloomExtract.compile(bloomOutput),
     effects.bloomBlurH0.compile(bloomOutput),
     effects.bloomBlurV0.compile(bloomOutput),
@@ -335,7 +342,6 @@ export async function prewarm(
     effects.bloomDown2.compile(bloomOutput),
     effects.bloomBlurH2.compile(bloomOutput),
     effects.bloomBlurV2.compile(bloomOutput),
-    effects.composite.compile({ colors: [output.format] }),
   ]);
 }
 

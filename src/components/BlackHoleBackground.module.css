@@ -1,8 +1,38 @@
+/*
+ * The base layer is only ever the flat background colour, because during the
+ * opening the hole is meant to be the only thing on screen. The glow lives on
+ * ::before so it can fade in independently of the canvas and of the text.
+ */
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  background: var(--bg);
+}
+
+/*
+ * The canvas is lifted above ::before with z-index, and that z-index is
+ * load-bearing rather than decoration.
+ *
+ * Paint order does not follow DOM order between a positioned element and a
+ * static one. A positioned ::before paints in the positioned layer, after a
+ * static in-flow block, so without the z-index the glow -- and its opaque --bg
+ * -- lands on top of the canvas. That was a real bug here: the hole rendered,
+ * sat at full opacity, and was invisible the whole time.
+ *
+ * The glow then fades in only while `live`, timed to match the canvas so the
+ * two arrive together instead of the glow popping in a frame early.
+ *
+ * `unavailable` gets no transition on purpose: that path fires before the
+ * first paint, and fading the glow in over 380ms would hand a browser with no
+ * WebGPU a black flash it never used to have.
+ */
+.backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
   background:
     radial-gradient(
       120% 80% at 72% 42%,
@@ -11,12 +41,22 @@
       transparent 68%
     ),
     var(--bg);
+  transition: opacity var(--canvas-in) var(--ease);
+}
+
+.backdrop[data-status="live"]::before {
+  opacity: 1;
+}
+
+.backdrop[data-status="unavailable"]::before {
+  opacity: 1;
+  transition: none;
 }
 
 /*
- * Only hidden once the canvas is actually drawing. Before that (and forever,
- * if WebGPU is unavailable) the static gradient above stays visible, so the
- * page never shows a bare void.
+ * Hidden until the canvas is actually drawing, and forever if WebGPU is
+ * unavailable. While hidden, the backdrop is a flat colour, so the opening
+ * shows the hole and nothing else.
  */
 .backdrop[data-status="idle"] .canvas,
 .backdrop[data-status="unavailable"] .canvas {
@@ -24,11 +64,14 @@
 }
 
 .canvas {
+  /* Above ::before. See the comment on .backdrop::before. */
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 900ms var(--ease);
+  transition: opacity var(--canvas-in) var(--ease);
 }
 
 .backdrop[data-status="live"] .canvas {

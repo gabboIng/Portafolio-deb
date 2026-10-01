@@ -15,6 +15,12 @@ html {
   /* Keep anchored sections clear of the fixed nav. */
   scroll-padding-top: 5rem;
   -webkit-text-size-adjust: 100%;
+  /*
+   * The grey rectangle a mobile browser flashes over a tapped link is the
+   * single loudest "this is a website" tell on a phone. The site's own focus
+   * and active styles already give the feedback.
+   */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -45,13 +51,36 @@ a {
   color: var(--ember);
   text-decoration-color: var(--ember-glow);
   text-underline-offset: 0.22em;
-  transition: color var(--dur-fast) var(--ease),
+  transition:
+    color var(--dur-fast) var(--ease),
     text-decoration-color var(--dur-fast) var(--ease);
 }
 
-a:hover {
-  color: var(--hot);
-  text-decoration-color: currentColor;
+/*
+ * Gated to real pointers. On touch this rule fires on tap, and with no pointer
+ * to leave, it sticks the tapped link in its hover colour until the next tap
+ * somewhere else -- the "broken hover" a phone shows on a desktop-first site.
+ */
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--hot);
+    text-decoration-color: currentColor;
+  }
+}
+
+/*
+ * Text that is a control must not be selectable, or a press-and-hold picks up a
+ * text selection instead of the press. `touch-action: manipulation` drops the
+ * wait a mobile browser otherwise holds after a tap, which is what makes taps
+ * feel laggy. Body copy is deliberately left selectable.
+ */
+button,
+a,
+[role="button"],
+summary {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 :focus-visible {
@@ -87,5 +116,12 @@ kbd {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    /*
+     * Delays must go too. Zeroing the duration while leaving a delay in place
+     * still holds the element invisible for the length of that delay, which is
+     * exactly the "content stuck behind a stalled reveal" case reduced-motion
+     * users are asking to avoid.
+     */
+    transition-delay: 0ms !important;
   }
 }

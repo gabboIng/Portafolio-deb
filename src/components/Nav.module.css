@@ -2,6 +2,12 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  /*
+   * With viewport-fit=cover the page runs under the status bar and the camera
+   * cutout. Zero on hardware without a notch, so this only ever adds the space
+   * that is there. The scrim grows to cover it once the header is scrolled.
+   */
+  padding-top: env(safe-area-inset-top);
   border-bottom: 1px solid transparent;
   transition:
     background-color var(--dur) var(--ease),
@@ -57,8 +63,10 @@
   text-decoration: none;
 }
 
-.links a:hover {
-  color: var(--text);
+@media (hover: hover) and (pointer: fine) {
+  .links a:hover {
+    color: var(--text);
+  }
 }
 
 .cta {
@@ -74,9 +82,11 @@
     background-color var(--dur-fast) var(--ease);
 }
 
-.cta:hover {
-  border-color: var(--ember-deep);
-  background: var(--ember-glow);
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover {
+    border-color: var(--ember-deep);
+    background: var(--ember-glow);
+  }
 }
 
 @media (width < 40rem) {

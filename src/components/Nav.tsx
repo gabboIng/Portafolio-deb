@@ -14,7 +14,11 @@ export function Nav() {
   }, []);
 
   return (
-    <header className={styles.header} data-scrolled={scrolled}>
+    <header
+      className={styles.header}
+      data-scrolled={scrolled}
+      data-reveal="nav"
+    >
       <nav className={styles.nav} aria-label="Principal">
         <a className={styles.brand} href="#top">
           <span className={styles.mark} aria-hidden="true" />

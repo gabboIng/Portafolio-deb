@@ -69,6 +69,26 @@
   --dur-fast: 140ms;
   --dur: 240ms;
 
+  /*
+   * How long the hole takes to materialize. Read by the backdrop's CSS and
+   * waited on by the opening reveal, so the two cannot drift apart.
+   */
+  --canvas-in: 380ms;
+
+  /*
+   * The opening cascade. Well past the usual sub-300ms UI budget on purpose:
+   * this fires once per load, on a first-time visit, which is the tier where a
+   * slow, deliberate entrance is the point rather than a cost.
+   *
+   * The stagger is deliberately over the usual 30-80ms band for the same
+   * reason. Below it the six hero items resolve as a single gesture, which
+   * reads as "the page appeared"; above it they arrive one at a time and read
+   * as the page being written. That is the intent here.
+   */
+  --reveal-nav: 820ms;
+  --reveal-item: 1000ms;
+  --reveal-stagger: 130ms;
+
   /* Layout */
   --measure: 68ch;
   --container: 1100px;

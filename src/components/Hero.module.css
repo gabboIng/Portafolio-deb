@@ -12,6 +12,17 @@
  * text laid on the left stays readable over the accretion disk. The gradient
  * is the belt-and-braces version for when the backdrop is a static CSS one.
  */
+/*
+ * The shader now aims the black hole at the centre of the frame so its disk is
+ * not clipped by any edge, which means the copy sits over the dimmer left side
+ * of the disk instead of beside it. This scrim is what keeps that readable.
+ *
+ * It fades across the full width of the block and to fully transparent at the
+ * right, so the disk shows through untouched as soon as it clears the text.
+ * --scrim-strong at the left is needed because that is where the brightest part
+ * of the copy sits; the shader's own centerFade is deliberately too weak to do
+ * this job on its own.
+ */
 .content {
   max-width: 40rem;
   padding: var(--space-5);
@@ -19,7 +30,7 @@
   background: linear-gradient(
     100deg,
     var(--scrim-strong) 0%,
-    var(--scrim) 45%,
+    var(--scrim) 55%,
     transparent 100%
   );
   border-radius: var(--radius-lg);
@@ -75,9 +86,11 @@
   color: var(--bg);
 }
 
-.primary:hover {
-  background: var(--hot);
-  color: var(--bg);
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover {
+    background: var(--hot);
+    color: var(--bg);
+  }
 }
 
 .secondary {
@@ -85,9 +98,11 @@
   color: var(--text);
 }
 
-.secondary:hover {
-  border-color: var(--ember-deep);
-  background: var(--ember-glow);
+@media (hover: hover) and (pointer: fine) {
+  .secondary:hover {
+    border-color: var(--ember-deep);
+    background: var(--ember-glow);
+  }
 }
 
 .badges {
