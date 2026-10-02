@@ -24,6 +24,7 @@ export interface SkillGroup {
 }
 
 export const profile = {
+  greeting: "Hola, soy",
   name: "Gabriel Sanhueza",
   handle: "gabboIng",
   role: "Desarrollador de software",

@@ -36,91 +36,39 @@
   border-radius: var(--radius-lg);
 }
 
-.eyebrow {
-  color: var(--ember);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/*
+ * Four lines, sized as a descending hierarchy rather than four peers: the
+ * greeting is small and quiet, the name carries the weight, and the two lines
+ * below it sit back in --text-muted. The gap between them stays tight so the
+ * block reads as one stacked statement instead of four stacked blocks.
+ */
+.greeting {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-xl);
+  font-weight: 500;
 }
 
 .name {
-  margin: var(--space-3) 0 var(--space-4);
+  margin: var(--space-2) 0 0;
   font-size: var(--text-hero);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.role {
+  margin: var(--space-5) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-xl);
+  font-weight: 500;
 }
 
 .tagline {
   max-width: 34ch;
+  margin: var(--space-2) 0 0;
   font-size: var(--text-xl);
-  color: var(--text);
-}
-
-.intro {
-  max-width: var(--measure);
-  margin-top: var(--space-3);
+  font-weight: 500;
   color: var(--text-muted);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-top: var(--space-6);
-}
-
-.primary,
-.secondary {
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-sm);
-  font-weight: 550;
-  text-decoration: none;
-  transition:
-    background-color var(--dur-fast) var(--ease),
-    border-color var(--dur-fast) var(--ease),
-    color var(--dur-fast) var(--ease);
-}
-
-.primary {
-  background: var(--ember);
-  color: var(--bg);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .primary:hover {
-    background: var(--hot);
-    color: var(--bg);
-  }
-}
-
-.secondary {
-  border: 1px solid var(--border-bright);
-  color: var(--text);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .secondary:hover {
-    border-color: var(--ember-deep);
-    background: var(--ember-glow);
-  }
-}
-
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: var(--space-6) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.badges li {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text-faint);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
 }
 
 @media (width < 40rem) {

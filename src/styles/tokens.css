@@ -81,12 +81,12 @@
    * slow, deliberate entrance is the point rather than a cost.
    *
    * The stagger is deliberately over the usual 30-80ms band for the same
-   * reason. Below it the six hero items resolve as a single gesture, which
+   * reason. Below it the four hero lines resolve as a single gesture, which
    * reads as "the page appeared"; above it they arrive one at a time and read
    * as the page being written. That is the intent here.
    */
   --reveal-nav: 820ms;
-  --reveal-item: 1000ms;
+  --reveal-item: 1150ms;
   --reveal-stagger: 130ms;
 
   /* Layout */
