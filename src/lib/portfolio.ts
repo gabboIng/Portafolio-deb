@@ -24,14 +24,18 @@ export interface SkillGroup {
 }
 
 export const profile = {
-  greeting: "Hola, soy",
   name: "Gabriel Sanhueza",
   handle: "gabboIng",
   role: "Desarrollador de software",
-  tagline: "Construyo aplicaciones web y gráficos en tiempo real.",
-  intro:
-    "Me interesa el lado visual de la web tanto como el de los datos: " +
-    "interfaces que se sienten rápidas y sistemas que hacen algo real.",
+  /**
+   * Shown in the hero, one at a time. The first line is what a visitor who
+   * never sees the rotation gets, so it has to stand on its own.
+   */
+  taglines: [
+    "La complejidad se entiende. Las soluciones se construyen.",
+    "No escribo código por escribir. Construyo soluciones.",
+    "Transformo problemas complejos en soluciones claras.",
+  ],
   location: "", // TODO: completar
   email: "", // TODO: completar
   links: [
@@ -155,6 +159,3 @@ export const skills: readonly SkillGroup[] = [
   },
   { label: "Herramientas", items: ["Git", "GitHub Pages", "pnpm"] },
 ];
-
-/** Rendered in the hero, under the name. */
-export const heroBadges = ["WebGPU", "TypeScript", "React"] as const;

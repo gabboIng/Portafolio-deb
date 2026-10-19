@@ -1,44 +1,57 @@
 /*
  * Design tokens.
  *
- * The accent ramp is not arbitrary: it is the accretion disk's own thermal
- * ramp from disk.wgsl, linear -> sRGB. That keeps the UI and the shader
- * looking like one thing instead of two layers.
+ * Strictly greyscale, taken from a design-system reference: white for primary,
+ * two greys for secondary and muted, one near-black for the tertiary surface.
+ * Three typefaces, loaded from node_modules via @fontsource-variable -- no CDN,
+ * so the site has no third-party runtime dependency and works offline.
  *
- *   vec3f(0.52, 0.14, 0.03) -> #BE6A32   outer disk, cool
- *   vec3f(1.00, 0.56, 0.17) -> #FFC472   mid disk, amber   <- accent
- *   vec3f(1.00, 0.94, 0.83) -> #FFF8EB   inner disk, white hot
+ *   Newsreader      the hero name. A display serif; at 56px it is set in a
+ *                   light weight so it reads editorial rather than heavy.
+ *   Geist           body copy and section titles. Neutral, slightly technical.
+ *   JetBrains Mono  the small uppercase labels. Its even rhythm is what makes
+ *                   an 11px label legible; a proportional face at that size is
+ *                   not.
  *
- * Contrast on --bg (all WCAG AA, muted clears 4.5:1):
- *   --text 17.5:1   --ember 12.8:1   --text-muted 6.7:1
+ * Contrast on --bg (all WCAG AA):
+ *   --text 18.9:1   --text-muted 7.4:1   --text-faint 6.0:1
+ *
+ * The previous warm accent is gone. The shader's disk ramp is already
+ * desaturated to grey at composite time (composite.wgsl, SATURATION = 0.0), so
+ * greyscale here matches what is actually rendered rather than fighting it.
  */
 
 :root {
   /* Surfaces */
-  --bg: #08080c;
-  --bg-raised: #0e0e14;
-  --border: #1e1e28;
-  --border-bright: #2e2e3c;
+  --bg: #111111;
+  --bg-raised: #1c1c1c;
+  --border: #27272a;
+  --border-bright: #3f3f46;
 
   /* Text */
-  --text: #f5efe6;
-  --text-muted: #9a93a0;
-  --text-faint: #6b6673;
+  --text: #ffffff;
+  --text-muted: #a1a1aa;
+  --text-faint: #909098;
 
-  /* Accent (disk thermal ramp) */
-  --ember: #ffc472;
-  --ember-deep: #be6a32;
-  --hot: #fff8eb;
-  --ember-glow: rgb(255 196 114 / 0.14);
+  /* Selection and focus. White on near-black is the inverted state the
+   * reference uses for its active controls, so it carries the same job here. */
+  --inverse: #ffffff;
+  --inverse-text: #111111;
+  --focus-ring: rgb(255 255 255 / 0.9);
+  --hover-wash: rgb(255 255 255 / 0.06);
+  --link-decor: rgb(255 255 255 / 0.35);
 
-  /* Legibility scrims over the animated background */
-  --scrim: rgb(8 8 12 / 0.68);
-  --scrim-strong: rgb(8 8 12 / 0.86);
+  /* Legibility scrims over the animated background. Tinted to --bg, not to a
+   * separate colour, so they read as the page dimming rather than as a veil of
+   * a different hue laid over it. */
+  --scrim: rgb(17 17 17 / 0.68);
+  --scrim-strong: rgb(17 17 17 / 0.86);
   --scrim-blur: 14px;
 
   /* Type */
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+  --font-serif: "Newsreader Variable", Georgia, "Times New Roman", serif;
+  --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", "Cascadia Code",
     Consolas, monospace;
 
   --text-xs: 0.75rem;
@@ -47,7 +60,7 @@
   --text-lg: 1.125rem;
   --text-xl: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
   --text-2xl: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
-  --text-hero: clamp(2.5rem, 1rem + 7vw, 5.25rem);
+  --text-hero: clamp(2rem, 10vw, 3.5rem);
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -81,7 +94,7 @@
    * slow, deliberate entrance is the point rather than a cost.
    *
    * The stagger is deliberately over the usual 30-80ms band for the same
-   * reason. Below it the four hero lines resolve as a single gesture, which
+   * reason. Below it the hero blocks resolve as a single gesture, which
    * reads as "the page appeared"; above it they arrive one at a time and read
    * as the page being written. That is the intent here.
    */

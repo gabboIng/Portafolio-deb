@@ -24,6 +24,13 @@
  * The glow then fades in only while `live`, timed to match the canvas so the
  * two arrive together instead of the glow popping in a frame early.
  *
+ * The gradient itself is neutral rather than the warm orange it used to be, and
+ * dimmed to match: a white glow is brighter per unit of alpha than the orange
+ * was, so the stops drop from 0.16/0.05 to 0.06/0.02 to sit in the same place
+ * perceptually. Its centre follows settings.ts (centerX 0.09, centerY 0.1),
+ * landing near 55%/45% of the frame rather than the 72%/42% it was when the
+ * camera aimed further right.
+ *
  * `unavailable` gets no transition on purpose: that path fires before the
  * first paint, and fading the glow in over 380ms would hand a browser with no
  * WebGPU a black flash it never used to have.
@@ -35,9 +42,9 @@
   opacity: 0;
   background:
     radial-gradient(
-      120% 80% at 72% 42%,
-      rgb(190 106 50 / 0.16) 0%,
-      rgb(190 106 50 / 0.05) 38%,
+      120% 80% at 55% 45%,
+      rgb(255 255 255 / 0.06) 0%,
+      rgb(255 255 255 / 0.02) 38%,
       transparent 68%
     ),
     var(--bg);

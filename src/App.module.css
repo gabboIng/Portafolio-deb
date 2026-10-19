@@ -44,11 +44,11 @@
 }
 
 /*
- * Evenly spaced at --reveal-stagger. With the current tokens the four hero
- * lines start between 0 and 390ms and the last one settles at 390 + 1150 =
- * 1540ms, so the whole hero is written over about a second and a half.
- * Only four are declared because the hero has four lines; the two extra slots
- * are unused today and are here so adding a fifth line needs no change here.
+ * Evenly spaced at --reveal-stagger. With the current tokens the three hero
+ * blocks start between 0 and 260ms and the last one settles at 260 + 1150 =
+ * 1410ms, so the whole hero is written over about a second and a half.
+ * Only four are declared because the hero has three; the extra slots are
+ * unused today and are here so adding a fourth needs no change here.
  */
 .shell[data-revealed="true"] [data-reveal="item"]:nth-child(1) {
   transition-delay: 0ms;

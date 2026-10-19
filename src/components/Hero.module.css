@@ -1,76 +1,185 @@
 .hero {
+  /*
+   * The two knobs for where the copy sits against the hole. Tunable here
+   * because this block is the only thing in the layout trading against the
+   * shader's framing, and the two have to move together.
+   *
+   *   --hero-rise     extra bottom padding, which is what lifts a centred
+   *                   block. Halve it to halve the lift.
+   *   --hero-shift-x  how far the copy leaves the container's content edge.
+   *                   Negative is to the left, away from the hole, which now
+   *                   sits right of centre.
+   *
+   * --hero-shift-x is clamped to the gutter on .content below rather than kept
+   * purely fixed. The copy is 614px of max-content, not a percentage, so the
+   * budget for a leftward move is the space outside the 1100px container, and
+   * that is zero at exactly the container width. Clamping reads that space
+   * directly instead of guessing it with a breakpoint, which is what leaves a
+   * dead band where the shift could have applied but did not.
+   */
+  --hero-rise: 32svh;
+  --hero-shift-x: -10rem;
+
   display: flex;
   align-items: center;
   min-height: min(100svh, 52rem);
   max-width: var(--container);
   margin: 0 auto;
-  padding: var(--space-9) var(--space-5) var(--space-8);
+
+  /*
+   * Asymmetric padding rather than a transform, for two reasons. It cannot
+   * overlap the nav the way a translate would, and it survives the copy
+   * changing height -- a fixed translate that lifted the current three lines
+   * would be wrong the moment a fourth made the block taller.
+   *
+   * The bias is deliberate: the shader puts the hole near the middle of the
+   * frame, so copy centred on that same axis lands on the brightest part of the
+   * disk. Lifting it puts the block in the dark above the disk instead of on it.
+   *
+   * In svh so the lift holds its proportion from a short laptop to a tall
+   * monitor. min-height still wins over the padding, so a short window grows
+   * the section instead of clipping the copy.
+   */
+  padding-block: var(--space-9) calc(var(--space-9) + var(--hero-rise));
+  padding-inline: var(--space-5);
 }
 
 /*
- * The shader's centerFade darkens a band through the middle of the frame, so
- * text laid on the left stays readable over the accretion disk. The gradient
- * is the belt-and-braces version for when the backdrop is a static CSS one.
- */
-/*
- * The shader now aims the black hole at the centre of the frame so its disk is
- * not clipped by any edge, which means the copy sits over the dimmer left side
- * of the disk instead of beside it. This scrim is what keeps that readable.
+ * The shader aims the black hole just right of the frame's centre, close enough
+ * that its disk still fills most of the width. The copy is lifted and shifted
+ * left off that axis, but the disk is wide enough that it still overlaps the
+ * right end of the block, so this scrim is what keeps that readable.
  *
  * It fades across the full width of the block and to fully transparent at the
  * right, so the disk shows through untouched as soon as it clears the text.
  * --scrim-strong at the left is needed because that is where the brightest part
  * of the copy sits; the shader's own centerFade is deliberately too weak to do
  * this job on its own.
+ *
+ * No border-radius here. A rounded box around a gradient is what makes a hero
+ * read as a card floating over the artwork instead of type sitting in front of
+ * it.
  */
 .content {
-  max-width: 40rem;
+  max-width: 58rem;
   padding: var(--space-5);
-  margin-left: calc(var(--space-5) * -1);
+  /*
+   * The base offset cancels the hero's own padding so the scrim can start on the
+   * container edge rather than inboard of it, and the shift is added on top.
+   *
+   * The shift is then clamped to the gutter: how much room there is outside the
+   * 1100px container, which is zero once the viewport reaches the container's
+   * own width and negative below it. So the copy moves left by the full amount
+   * on a wide screen, by however much actually fits as the window narrows, and
+   * by nothing at all where there is no gutter to spend. min() with 0 keeps a
+   * rightward value from being clamped by the same expression, so the knob still
+   * works in either direction.
+   */
+  margin-left: calc(
+    var(--space-5) * -1 + max(min(var(--hero-shift-x), 0px), -1 * max(0px, (100vw - var(--container)) / 2))
+  );
   background: linear-gradient(
     100deg,
     var(--scrim-strong) 0%,
     var(--scrim) 55%,
     transparent 100%
   );
-  border-radius: var(--radius-lg);
 }
 
 /*
- * Four lines, sized as a descending hierarchy rather than four peers: the
- * greeting is small and quiet, the name carries the weight, and the two lines
- * below it sit back in --text-muted. The gap between them stays tight so the
- * block reads as one stacked statement instead of four stacked blocks.
+ * One scale, used consistently, instead of a 3x jump between the name and
+ * everything around it. 11px / 56px / 20px: the label is small enough to be
+ * read as metadata, the name is large enough to be the subject, and the
+ * tagline sits between them rather than matching either.
+ *
+ * The label is uppercase mono on purpose. At 11px a proportional face cannot
+ * hold an even rhythm, which is exactly the size where text stops being
+ * readable. It sits on --text-muted rather than --text-faint: --text-faint
+ * clears AA at 6.0:1 now that the palette is greyscale, but an 11px label is
+ * carrying metadata over an animated backdrop whose luminance moves, so the
+ * extra headroom --text-muted's 7.4:1 buys is the point.
  */
-.greeting {
+.label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
   margin: 0;
   color: var(--text-muted);
-  font-size: var(--text-xl);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
   font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
+/* The hairline runs to the edge of the block, so the label reads as a caption
+   on a rule rather than as a floating word. Decorative, so its contrast is not
+   held to a ratio. */
+.rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border-bright);
+}
+
+/*
+ * Serif, in a light weight. A display serif puts far more ink on the page per
+ * glyph than a geometric sans does, so the 600 the name used to carry would
+ * close Newsreader's counters and stop it reading as editorial. The optical
+ * size axis then does the rest: the larger the set, the tighter the letterforms
+ * want to be, and the font handles that on its own rather than needing a
+ * hand-tuned tracking value per breakpoint.
+ *
+ * The global h1 rule sets 650 for the sans section titles; this is the one
+ * place that deliberately steps out of line with it.
+ */
 .name {
-  margin: var(--space-2) 0 0;
+  margin: var(--space-5) 0 0;
+  font-family: var(--font-serif);
   font-size: var(--text-hero);
-  font-weight: 800;
+  font-weight: 400;
+  font-optical-sizing: auto;
   letter-spacing: -0.02em;
 }
 
-.role {
-  margin: var(--space-5) 0 0;
-  color: var(--text-muted);
-  font-size: var(--text-xl);
-  font-weight: 500;
-}
-
 .tagline {
-  max-width: 34ch;
-  margin: var(--space-2) 0 0;
-  font-size: var(--text-xl);
-  font-weight: 500;
+  margin: var(--space-4) 0 0;
+  font-size: 1.25rem;
+  font-weight: 400;
   color: var(--text-muted);
 }
 
+/*
+ * All three lines occupy one grid cell, so the block keeps a fixed size while
+ * the text rotates and the longest line reserves the height. The swap is a
+ * short slide rather than a crossfade: a fade alone reads as a flicker at this
+ * size, and the direction of travel tells you the line is being replaced rather
+ * than simply changed.
+ */
+.taglineStack {
+  display: grid;
+}
+
+.taglineLine {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(0.4rem);
+  transition:
+    opacity 320ms var(--ease),
+    transform 320ms var(--ease);
+}
+
+.taglineLine[data-active="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * No width breakpoint for the horizontal shift: the gutter clamp on .content
+ * already collapses it to zero exactly where there is no room to spend. What is
+ * left here is the layout change that actually needs a breakpoint -- portrait
+ * drops the full-height hero, the scrim's inboard padding, and the shift.
+ */
 @media (width < 40rem) {
   .hero {
     min-height: auto;
@@ -80,5 +189,9 @@
   .content {
     margin-left: 0;
     padding: var(--space-4) 0;
+  }
+
+  .tagline {
+    font-size: var(--text-lg);
   }
 }

@@ -47,9 +47,15 @@ p {
   text-wrap: pretty;
 }
 
+/*
+ * Links carry no colour to spend in a greyscale palette, so the affordance is
+ * the ramp: muted grey at rest, white on hover. That is a real 7.4:1 -> 18.9:1
+ * step rather than a tint nobody can see, and the underline thickening in step
+ * with it gives a second, non-colour cue.
+ */
 a {
-  color: var(--ember);
-  text-decoration-color: var(--ember-glow);
+  color: var(--text-muted);
+  text-decoration-color: var(--link-decor);
   text-underline-offset: 0.22em;
   transition:
     color var(--dur-fast) var(--ease),
@@ -63,7 +69,7 @@ a {
  */
 @media (hover: hover) and (pointer: fine) {
   a:hover {
-    color: var(--hot);
+    color: var(--text);
     text-decoration-color: currentColor;
   }
 }
@@ -84,7 +90,7 @@ summary {
 }
 
 :focus-visible {
-  outline: 2px solid var(--ember);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
@@ -95,9 +101,14 @@ kbd {
   font-size: 0.9em;
 }
 
+/*
+ * Inverted, the same white-on-near-black the reference uses for an active
+ * control. Selection is the one place a greyscale palette can afford a solid
+ * fill, and matching the reference's inverted state keeps it on-system.
+ */
 ::selection {
-  background: var(--ember-deep);
-  color: var(--hot);
+  background: var(--inverse);
+  color: var(--inverse-text);
 }
 
 /* The animated canvas sits behind everything and must never eat clicks. */

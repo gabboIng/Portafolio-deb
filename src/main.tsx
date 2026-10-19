@@ -1,6 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/geist";
+import "@fontsource-variable/jetbrains-mono";
+
 import { App } from "./App";
 import "./styles/global.css";
 

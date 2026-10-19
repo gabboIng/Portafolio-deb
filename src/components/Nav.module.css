@@ -45,8 +45,8 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--ember);
-  box-shadow: 0 0 0 3px rgb(255 196 114 / 0.16);
+  background: var(--text);
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.16);
 }
 
 .links {
@@ -84,8 +84,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .cta:hover {
-    border-color: var(--ember-deep);
-    background: var(--ember-glow);
+    border-color: var(--text-muted);
+    background: var(--hover-wash);
   }
 }
 
